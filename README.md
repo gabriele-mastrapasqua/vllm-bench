@@ -52,13 +52,24 @@ vllm-bench --help
 
 ## Usage
 
+If installed globally via `uv tool install`:
+
 ```bash
 vllm-bench [options]
 ```
 
-Run `vllm-bench --help` for all available flags.
+If running from the cloned repo folder:
+
+```bash
+uv run vllm-bench [options]
+```
+
+Run `vllm-bench --help` (or `uv run vllm-bench --help`) for all available flags.
 
 By default the tool targets `http://localhost:8000` (standard vLLM port). Use `-b` to override.
+
+> **Note:** All examples below use `uv run vllm-bench` (works from the repo folder).
+> If you installed globally with `uv tool install`, drop the `uv run` prefix.
 
 ## Test Scenarios
 
@@ -67,7 +78,7 @@ By default the tool targets `http://localhost:8000` (standard vLLM port). Use `-
 Verify the server is reachable and responding correctly.
 
 ```bash
-vllm-bench -b http://localhost:8000 -p 1 -n 1 -m my-model
+uv run vllm-bench -b http://localhost:8000 -p 1 -n 1 -m my-model
 ```
 
 ### 2. Baseline — Low Concurrency, Small Prompts
@@ -75,7 +86,7 @@ vllm-bench -b http://localhost:8000 -p 1 -n 1 -m my-model
 Establish a single-user throughput baseline with short Q&A prompts and minimal output.
 
 ```bash
-vllm-bench -b http://localhost:8000 -p 1 -n 10 --prompt-size small --max-tokens 64 -m my-model
+uv run vllm-bench -b http://localhost:8000 -p 1 -n 10 --prompt-size small --max-tokens 64 -m my-model
 ```
 
 ### 3. Light Load — Few Parallel Users
@@ -83,7 +94,7 @@ vllm-bench -b http://localhost:8000 -p 1 -n 10 --prompt-size small --max-tokens 
 Simulate a handful of concurrent users with small prompts.
 
 ```bash
-vllm-bench -b http://localhost:8000 -p 4 -n 16 --prompt-size small --max-tokens 64 -m my-model
+uv run vllm-bench -b http://localhost:8000 -p 4 -n 16 --prompt-size small --max-tokens 64 -m my-model
 ```
 
 ### 4. Medium Load — Moderate Concurrency, Longer Prompts
@@ -91,7 +102,7 @@ vllm-bench -b http://localhost:8000 -p 4 -n 16 --prompt-size small --max-tokens 
 Increase both concurrency and prompt complexity to see how the server handles heavier KV-cache usage.
 
 ```bash
-vllm-bench -b http://localhost:8000 -p 8 -n 32 --prompt-size medium --max-tokens 256 -m my-model
+uv run vllm-bench -b http://localhost:8000 -p 8 -n 32 --prompt-size medium --max-tokens 256 -m my-model
 ```
 
 ### 5. Heavy Load — High Concurrency, Large Prompts
@@ -99,7 +110,7 @@ vllm-bench -b http://localhost:8000 -p 8 -n 32 --prompt-size medium --max-tokens
 Push the server towards its limits with many parallel requests and long-form generation.
 
 ```bash
-vllm-bench -b http://localhost:8000 -p 16 -n 50 --prompt-size large --max-tokens 512 -m my-model
+uv run vllm-bench -b http://localhost:8000 -p 16 -n 50 --prompt-size large --max-tokens 512 -m my-model
 ```
 
 ### 6. Saturation Test — Maximum Parallel Requests
@@ -107,7 +118,7 @@ vllm-bench -b http://localhost:8000 -p 16 -n 50 --prompt-size large --max-tokens
 Find the breaking point: flood the server with concurrent requests.
 
 ```bash
-vllm-bench -b http://localhost:8000 -p 32 -n 64 --prompt-size medium --max-tokens 256 -m my-model
+uv run vllm-bench -b http://localhost:8000 -p 32 -n 64 --prompt-size medium --max-tokens 256 -m my-model
 ```
 
 ### 7. Long Generation Stress
@@ -115,7 +126,7 @@ vllm-bench -b http://localhost:8000 -p 32 -n 64 --prompt-size medium --max-token
 Test sustained generation with high token counts to stress memory and throughput over time.
 
 ```bash
-vllm-bench -b http://localhost:8000 -p 4 -n 8 --prompt-size large --max-tokens 1024 -m my-model
+uv run vllm-bench -b http://localhost:8000 -p 4 -n 8 --prompt-size large --max-tokens 1024 -m my-model
 ```
 
 ### 8. Streaming vs Non-Streaming Comparison
@@ -124,10 +135,10 @@ Run the same workload with and without streaming to compare TTFT and throughput.
 
 ```bash
 # Streaming (default)
-vllm-bench -b http://localhost:8000 -p 8 -n 20 --prompt-size medium --max-tokens 256 -m my-model
+uv run vllm-bench -b http://localhost:8000 -p 8 -n 20 --prompt-size medium --max-tokens 256 -m my-model
 
 # Non-streaming
-vllm-bench -b http://localhost:8000 -p 8 -n 20 --prompt-size medium --max-tokens 256 --no-stream -m my-model
+uv run vllm-bench -b http://localhost:8000 -p 8 -n 20 --prompt-size medium --max-tokens 256 --no-stream -m my-model
 ```
 
 ### 9. Scaling Ladder — Incremental Concurrency
@@ -137,7 +148,7 @@ Gradually increase parallelism to find the optimal concurrency level for your ha
 ```bash
 for p in 1 2 4 8 16 32; do
   echo "=== Parallel: $p ==="
-  vllm-bench -b http://localhost:8000 -p $p -n 32 --prompt-size small --max-tokens 128 -m my-model
+  uv run vllm-bench -b http://localhost:8000 -p $p -n 32 --prompt-size small --max-tokens 128 -m my-model
 done
 ```
 
@@ -146,9 +157,9 @@ done
 Run different prompt sizes back-to-back to simulate a realistic mix of user queries.
 
 ```bash
-vllm-bench -b http://localhost:8000 -p 8 -n 16 --prompt-size small  --max-tokens 64  -m my-model
-vllm-bench -b http://localhost:8000 -p 8 -n 16 --prompt-size medium --max-tokens 256 -m my-model
-vllm-bench -b http://localhost:8000 -p 8 -n 16 --prompt-size large  --max-tokens 512 -m my-model
+uv run vllm-bench -b http://localhost:8000 -p 8 -n 16 --prompt-size small  --max-tokens 64  -m my-model
+uv run vllm-bench -b http://localhost:8000 -p 8 -n 16 --prompt-size medium --max-tokens 256 -m my-model
+uv run vllm-bench -b http://localhost:8000 -p 8 -n 16 --prompt-size large  --max-tokens 512 -m my-model
 ```
 
 ## Metrics Explained
