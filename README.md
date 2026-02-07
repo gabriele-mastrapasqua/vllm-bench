@@ -7,40 +7,47 @@ A lightweight CLI to stress-test any OpenAI-compatible server (vLLM, Ollama, lla
 - Python **>= 3.10**
 - [uv](https://docs.astral.sh/uv/) (recommended) or pip
 
-## Installation
-
-### With uv (recommended)
+## Quick Install (one command)
 
 ```bash
-# Clone the repo
-git clone <repo-url> && cd vllm-mlx-test
-
-# Install dependencies and the CLI in one step
-uv sync
-
-# Run
-uv run vllm-bench --help
+uv tool install git+https://github.com/gabriele-mastrapasqua/vllm-bench.git
 ```
 
-### With pip
+This installs `vllm-bench` globally — no clone, no venv, just run:
 
 ```bash
-# Clone the repo
-git clone <repo-url> && cd vllm-mlx-test
-
-# Install in a virtualenv
-python3 -m venv .venv && source .venv/bin/activate
-pip install .
-
-# Run
 vllm-bench --help
 ```
 
-### Quick run without installing (uv)
+To upgrade later:
 
 ```bash
-# Run directly from the repo without explicit install
+uv tool upgrade vllm-bench
+```
+
+To uninstall:
+
+```bash
+uv tool uninstall vllm-bench
+```
+
+## Alternative Installation
+
+### From source with uv
+
+```bash
+git clone https://github.com/gabriele-mastrapasqua/vllm-bench.git && cd vllm-bench
+uv sync
 uv run vllm-bench --help
+```
+
+### From source with pip
+
+```bash
+git clone https://github.com/gabriele-mastrapasqua/vllm-bench.git && cd vllm-bench
+python3 -m venv .venv && source .venv/bin/activate
+pip install .
+vllm-bench --help
 ```
 
 ## Usage
