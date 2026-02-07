@@ -76,7 +76,15 @@ uv run vllm-bench [options]
 
 Run `vllm-bench --help` (or `uv run vllm-bench --help`) for all available flags.
 
-By default the tool targets `http://localhost:8000` (standard vLLM port). Use `-b` to override.
+By default the tool targets `http://localhost:8000` (standard vLLM port). Use `-b` to point to a different host or port:
+
+```bash
+# Remote server
+uv run vllm-bench -b http://192.168.1.50:8080 -p 4 -n 16 -m my-model
+
+# Different local port
+uv run vllm-bench -b http://localhost:5000 -p 4 -n 16 -m my-model
+```
 
 > **Note:** All examples below use `uv run vllm-bench` (works from the repo folder).
 > If you installed globally with `uv tool install`, drop the `uv run` prefix.
